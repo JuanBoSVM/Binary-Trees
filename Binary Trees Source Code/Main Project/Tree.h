@@ -38,6 +38,9 @@ private:
 	// Is the node valanced?
 	bool isBalanced(Node<T>*);
 
+	// Update a Node's weight
+	void updateWeight(Node<T>*);
+
 /************************************************************************/
 /* 								DESTRUCTOR	                            */
 /************************************************************************/
@@ -84,36 +87,16 @@ void Tree<T>::addNode(T _value) {
 					// The parent is no longer a root
 					cNode->isLeaf = false;
 
-					// Assign a brother to the new node
-					if (cNode->rChild != nullptr) {
-						
-						cNode->lChild->brother = cNode->rChild;
-						cNode->rChild->brother = cNode->lChild;
-					}
-
 					// Update the current node
+					// to the newly created one
 					cNode = cNode->lChild;
 
-					// Update the parent's weight
-					while (cNode->parent != nullptr) {
+					// Assign a brother to the new node
+					cNode->updateBrother();
 
-						// If the node's the left child,
-						// Update the left weight of the parent
-						if (cNode == cNode->parent->lChild) {
-							cNode->parent->lWeight = cNode->mLength + 1;
-						}
-
-						// Otherwise, update the right weight
-						else {
-							cNode->parent->rWeight = cNode->mLength + 1;
-						}
-
-						// Update the parent's max length
-						cNode->parent->updateLength();
-						
-						// Update the current node
-						cNode = cNode->parent;
-					}
+					// Update the tree's
+					// weight up the line
+					updateWeight(cNode);
 
 					added = true;
 				}
@@ -135,42 +118,22 @@ void Tree<T>::addNode(T _value) {
 					// The parent is no longer a root
 					cNode->isLeaf = false;
 
-					// Assign a brother to the new node
-					if (cNode->lChild != nullptr) {
-
-						cNode->rChild->brother = cNode->lChild;
-						cNode->lChild->brother = cNode->rChild;
-					}
-
 					// Update the current node
+					// to the newly created one
 					cNode = cNode->rChild;
 
-					// Update the parent's weight
-					while (cNode->parent != nullptr) {
+					// Assign a brother to the new node
+					cNode->updateBrother();
 
-						// If the node's the right child,
-						// Update the right weight of the parent
-						if (cNode == cNode->parent->rChild) {
-							cNode->parent->rWeight = cNode->mLength + 1;
-						}
-
-						// Otherwise, update the left weight
-						else {
-							cNode->parent->lWeight = cNode->mLength + 1;
-						}
-
-						// Update the parent's max length
-						cNode->parent->updateLength();
-
-						// Update the current node
-						cNode = cNode->parent;
-					}
+					// Update the tree's
+					// weight up the line
+					updateWeight(cNode);
 
 					added = true;
 				}
 
 				// Advance down the tree
-				else { cNode = cNode->lChild; }
+				else { cNode = cNode->rChild; }
 			}
 		}
 	}
@@ -215,6 +178,29 @@ bool Tree<T>::isBalanced(Node<T>* _node) {
 
 	// The node's balanced
 	else { return true; }
+}
+
+template <typename T>
+void Tree<T>::updateWeight(Node<T>* _node) {
+	while (_node->parent != nullptr) {
+
+		// If the node's the left child,
+		// Update the left weight of the parent
+		if (_node == _node->parent->lChild) {
+			_node->parent->lWeight = _node->mLength + 1;
+		}
+
+		// Otherwise, update the right weight
+		else {
+			_node->parent->rWeight = _node->mLength + 1;
+		}
+
+		// Update the parent's max length
+		_node->parent->updateLength();
+
+		// Update the current node
+		_node = _node->parent;
+	}
 }
 
 template <typename T>

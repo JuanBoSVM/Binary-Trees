@@ -19,9 +19,10 @@ int main() {
 		
 		// Check if the tree's unbalanced
 		if (!mainTree) {
-
+			// Print the before version
 			// Rebalance the tree
-
 		}
+
+		//Print the result
 	}
 }

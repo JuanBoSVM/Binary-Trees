@@ -26,6 +26,9 @@ public:
 	
 	// Update the max length of the node
 	void updateLength();
+
+	// Update a node's brother
+	void updateBrother();
 };
 
 
@@ -35,3 +38,15 @@ public:
 
 template <typename T>
 void Node<T>::updateLength() { mLength = std::max(lWeight, rWeight); }
+
+template <typename T>
+void Node<T>::updateBrother() {
+	
+	// Check if there are two children
+	if (parent->lChild != nullptr && parent->rChild != nullptr) {
+		
+		// Create the relationship
+		parent->rChild->brother = parent->lChild;
+		parent->lChild->brother = parent->rChild;
+	}
+}
