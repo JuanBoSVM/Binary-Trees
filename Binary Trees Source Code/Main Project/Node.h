@@ -23,7 +23,14 @@ public:
 /************************************************************************/
 /* 								DECLARATIONS	                        */
 /************************************************************************/
+
+public:
 	
+	// Update the node's information
+	void update();
+
+private:
+
 	// Update the max length of the node
 	void updateLength();
 
@@ -37,13 +44,41 @@ public:
 /************************************************************************/
 
 template <typename T>
-void Node<T>::updateLength() { mLength = std::max(lWeight, rWeight); }
+void Node<T>::update() {
+	
+	// Ignore empty nodes
+	if (this != nullptr) {
+
+		updateLength();
+		updateBrother();
+
+		// Update it's leaf status
+		if (lChild == nullptr && rChild == nullptr) {
+			
+			// Update it's length and weight
+			mLength = 0;
+			lWeight = 0;
+			rWeight = 0;
+
+			isLeaf = true;
+		}
+		else { isLeaf = false; }
+	}
+}
+
+template <typename T>
+void Node<T>::updateLength() {
+	mLength = std::max(lWeight, rWeight);
+}
 
 template <typename T>
 void Node<T>::updateBrother() {
 	
+	// The node's a root
+	if (parent == nullptr) { brother = nullptr; }
+
 	// Check if there are two children
-	if (parent->lChild != nullptr && parent->rChild != nullptr) {
+	else if (parent->lChild != nullptr && parent->rChild != nullptr) {
 		
 		// Create the relationship
 		parent->rChild->brother = parent->lChild;
