@@ -18,6 +18,9 @@ int main() {
 		// only if it doesn't exist already
 		if (!Tree.contains(i)) { Tree.addNode(i); }
 		
+		// Update the tree's info
+		Tree.update();
+
 		// Check if the tree's unbalanced
 		if (!Tree) {
 			
@@ -27,10 +30,8 @@ int main() {
 			// Rebalance the tree
 			Tree.rebalance();
 		}
-
-		// Update the tree's info
-		Tree.update();
 		
 		//Print the result
+
 	}
 }
