@@ -22,8 +22,9 @@ class BinaryTree {
 private:
 
 	Node<T>
-		* root		{ nullptr },
-		* unbalanced{ nullptr };
+		* root       { nullptr },
+		* unbalanced { nullptr },
+		* lastChecked{ nullptr };
 	int
 		nodes { 0 },
 		length{ 0 };
@@ -107,10 +108,16 @@ bool BinaryTree<T>::contains(T _data) {
 
 		// If the data looked for is lower than the current node,
 		// advance to the left side of the tree
-		else if (_data < cNode->value) { cNode = cNode->lChild; }
+		else if (_data < cNode->value) {
+			lastChecked = cNode;
+			cNode = cNode->lChild;
+		}
 
 		// Otherwise, advance to the right side
-		else { cNode = cNode->rChild; }
+		else {
+			lastChecked = cNode;
+			cNode = cNode->rChild;
+		}
 	}
 
 	// The node wasn't found
@@ -128,104 +135,49 @@ void BinaryTree<T>::addNode(T _value) {
 	// Save it as a child
 	else {
 
-		Node<T>* cNode{ root };		// Current Node
-		bool added{ false };		// Has a new node been added?
+		// Current Node
+		Node<T>* cNode{ lastChecked };
 
-		while (!added) {
-			
-			// Go to the left
-			if (_value < cNode->value) {
+		// Should the new node go to the left of the last checked one?
+		bool left{ _value < cNode->value };
 
-				// Is the node free?
-				if (cNode->lChild == nullptr) {
-					
-					// Save the new node there with
-					// the current one as its parent
-					cNode->lChild = new Node<T>{ _value, cNode };
-
-					// The parent is no longer a root
-					cNode->isLeaf = false;
-
-					// Update the current node
-					// to the newly created one
-					cNode = cNode->lChild;
-
-					// Update the new node's info
-					cNode->update();
-
-					// Update the tree's
-					// weight up the line
-					updateWeight(cNode);
-
-					added = true;
-				}
-
-				// Advance down the tree
-				else { cNode = cNode->lChild; }
-			}
-
-			// Go to the right
-			else if (cNode->value < _value) {
-				
-				// Is the node free?
-				if (cNode->rChild == nullptr) {
-
-					// Save the new node there with
-					// the current one as its parent
-					cNode->rChild = new Node<T>{ _value, cNode };
-
-					// The parent is no longer a root
-					cNode->isLeaf = false;
-
-					// Update the current node
-					// to the newly created one
-					cNode = cNode->rChild;
-
-					// Update the new node's info
-					cNode->update();
-
-					// Update the tree's
-					// weight up the line
-					updateWeight(cNode);
-
-					added = true;
-				}
-
-				// Advance down the tree
-				else { cNode = cNode->rChild; }
-			}
-		}
+		// Save the new node to the correct side of the
+		// last checked one, with it as its parent
+		if (left) { cNode->lChild = new Node<T>{ _value, cNode }; }
+		else { cNode->rChild = new Node<T>{ _value, cNode }; }
 	}
 
+	// Reset the last checked node,
+	// and add one to the count of nodes
+	lastChecked = nullptr;
 	nodes++;
 }
 
 template <typename T>
 UB_TYPE BinaryTree<T>::getUbType(Node<T>* _ubNode) {
 
-	// The first step is left
-	if (_ubNode->lWeight > _ubNode->rWeight) {
-		
-		// The second step is left
-		if (_ubNode->lChild->lWeight > _ubNode->lChild->rWeight) {
-			
-			return UB_TYPE::LL;
-		}
+	// First step of the unbalance
+	bool left{ _ubNode->lWeight > _ubNode->rWeight };
 
-		// The second step is right
+	// The first step is left
+	if (left) {
+		
+		// Second step of the unbalance
+		left = _ubNode->lChild->lWeight > _ubNode->lChild->rWeight;
+
+		// Combine the two steps
+		if (left) { return UB_TYPE::LL; }
 		else { return UB_TYPE::LR; }
 	}
 
 	// The first step is right
 	else {
 
-		// The second step is left
-		if (_ubNode->rChild->lWeight > _ubNode->rChild->rWeight) {
+		// Second step of the unbalance
+		left = _ubNode->rChild->lWeight > _ubNode->rChild->rWeight;
 
-			return UB_TYPE::RL;
-		}
-
-		// The second step is right
+		// Combine the two steps
+		if (left) { return UB_TYPE::RL; }
 		else { return UB_TYPE::RR; }
 	}
 }
@@ -256,6 +208,10 @@ void BinaryTree<T>::rebalance() {
 		pullLeft(unbalanced);
 		break;
 	}
+
+	// Update the tree after the changes
+	unbalanced = nullptr;
+	update(root);
 }
 
 template <typename T>
@@ -272,7 +228,7 @@ template <typename T>
 void BinaryTree<T>::update(Node<T>* _cNode) {
 
 	// If the tree's just the root, ignore it
-	if (!root->isLeaf) {
+	if (!root->isLeaf()) {
 
 		// Look for the leafs from the left side
 		if (_cNode->lChild != nullptr) { update(_cNode->lChild); }
@@ -282,7 +238,7 @@ void BinaryTree<T>::update(Node<T>* _cNode) {
 
 		// If there are no further nodes below,
 		// update the node's weight
-		if (_cNode->isLeaf) { updateWeight(_cNode); }
+		if (_cNode->isLeaf()) { updateWeight(_cNode); }
 
 		// Update the rest of the node's info
 		else { _cNode->update(); }
@@ -466,7 +422,7 @@ template <typename T>
 bool BinaryTree<T>::isBalanced(Node<T>* _node) {
 
 	// If the node has no children, return true
-	if (_node->isLeaf) {
+	if (_node->isLeaf()) {
 		unbalanced = nullptr;
 		return true;
 	}
@@ -495,7 +451,7 @@ template <typename T>
 void BinaryTree<T>::updateWeight(Node<T>* _node) {
 	
 	// If the node's a leaf, update it's info
-	if (_node->isLeaf) { _node->update(); }
+	if (_node->isLeaf()) { _node->update(); }
 
 	// Look for the root, parent from parent
 	while (_node->parent != nullptr) {

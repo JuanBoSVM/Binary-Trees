@@ -18,7 +18,6 @@ public:
 		mLength{ 0 },	// Max Length
 		lWeight{ 0 },	// Left Weight
 		rWeight{ 0 };	// Right Weight
-	bool isLeaf{ true };// Is the node a leaf?
 
 /************************************************************************/
 /* 								DECLARATIONS	                        */
@@ -28,6 +27,9 @@ public:
 	
 	// Update the node's information
 	void update();
+
+	// Is the node a leaf?
+	bool isLeaf();
 
 private:
 
@@ -52,19 +54,25 @@ void Node<T>::update() {
 		updateLength();
 		updateBrother();
 
-		// Update it's leaf status
-		if (lChild == nullptr && rChild == nullptr) {
-			
-			// Update it's length and weight
+		// If the node's a leaf,
+		// update its length and weights
+		if (isLeaf()) {
+
 			mLength = 0;
 			lWeight = 0;
 			rWeight = 0;
-
-			isLeaf = true;
 		}
-		else { isLeaf = false; }
+
+		// Update only one side of the weights
+		// if the node has no children there
+		if (lChild == nullptr) { lWeight = 0; }
+		if (rChild == nullptr) { rWeight = 0; }
 	}
 }
+
+template <typename T>
+bool Node<T>::isLeaf() { return lChild == nullptr && rChild == nullptr; }
+
 
 template <typename T>
 void Node<T>::updateLength() {
