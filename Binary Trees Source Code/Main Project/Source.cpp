@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Tree.h"
+#include "BinaryTree.h"
 
 
 /************************************************************************/
@@ -9,27 +9,28 @@
 /************************************************************************/
 
 int main() {
-	Tree<int> mainTree;
+	BinaryTree<int> Tree;
 	std::vector<int> input{ 10, 20, 15, 25, 30, 16, 18, 19 };
 
 	for (int i : input) {
 		
 		// Add the new input to the tree
-		mainTree.addNode(i);
+		// only if it doesn't exist already
+		if (!Tree.contains(i)) { Tree.addNode(i); }
 		
 		// Check if the tree's unbalanced
-		if (!mainTree) {
+		if (!Tree) {
 			
 			// Print the before version
 			
 
 			// Rebalance the tree
-			mainTree.rebalance();
-
-			// Update the tree's info
-			mainTree.update();
+			Tree.rebalance();
 		}
 
+		// Update the tree's info
+		Tree.update();
+		
 		//Print the result
 	}
 }

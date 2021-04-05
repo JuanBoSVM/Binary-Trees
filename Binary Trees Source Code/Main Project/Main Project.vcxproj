@@ -143,7 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Node.h" />
-    <ClInclude Include="Tree.h" />
+    <ClInclude Include="BinaryTree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
