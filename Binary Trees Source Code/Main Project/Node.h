@@ -11,7 +11,6 @@ public:
 	T value{ 0 };
 	Node
 		* parent { nullptr },	// Parent
-		* brother{ nullptr },	// Brother
 		* lChild { nullptr },	// Left Child
 		* rChild { nullptr };	// Right Child
 	int
@@ -35,9 +34,6 @@ private:
 
 	// Update the max length of the node
 	void updateLength();
-
-	// Update a node's brother
-	void updateBrother();
 };
 
 
@@ -52,7 +48,6 @@ void Node<T>::update() {
 	if (this != nullptr) {
 
 		updateLength();
-		updateBrother();
 
 		// If the node's a leaf,
 		// update its length and weights
@@ -77,19 +72,4 @@ bool Node<T>::isLeaf() { return lChild == nullptr && rChild == nullptr; }
 template <typename T>
 void Node<T>::updateLength() {
 	mLength = std::max(lWeight, rWeight);
-}
-
-template <typename T>
-void Node<T>::updateBrother() {
-	
-	// The node's a root
-	if (parent == nullptr) { brother = nullptr; }
-
-	// Check if there are two children
-	else if (parent->lChild != nullptr && parent->rChild != nullptr) {
-		
-		// Create the relationship
-		parent->rChild->brother = parent->lChild;
-		parent->lChild->brother = parent->rChild;
-	}
 }

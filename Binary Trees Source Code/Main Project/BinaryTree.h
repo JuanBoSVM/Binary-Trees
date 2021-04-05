@@ -251,44 +251,38 @@ void BinaryTree<T>::pullRight(Node<T>* _head) {
 	// Check if we have to move the root
 	if (_head == root) {
 
-		// Reassign the tree's root to it's left child
-		root = _head->lChild;
-
-		// The former root now has a parent
-		root->parent->parent = root;
-
-		// Adjust the former root's left child
-		root->parent->lChild = root->rChild;
-
-		// Make that child's parent the former root
-		// if it has a child
-		if (root->rChild != nullptr) {
-
-			root->rChild->parent = root->parent;
-		}
-		
-		// Make the former root the right child
-		// of the new root
-		root->rChild = root->parent;
-
-		// Erase the new root's parent
-		root->parent = nullptr;
-
 		// List of modified nodes
 		Node<T>
 			* nodeA{ root },
 			* nodeB{ root->lChild },
-			* nodeC{ root->rChild },
-			* nodeD{ root->lChild->lChild },
-			* nodeE{ root->rChild->rChild };
+			* nodeC{ root->lChild->rChild };
+
+		// Reassign the tree's root to it's left child
+		// and get rid of its parent since it's the root
+		root = nodeB;
+		root->parent = nullptr;
+
+		// The new root now has a child
+		// and the former root now has a parent
+		nodeA->parent = nodeB;
+		nodeB->rChild = nodeA;
+
+		// If node C exists, adjust its
+		// relationship with node A
+		if (nodeC != nullptr) {
+
+			nodeA->lChild = nodeC;
+			nodeC->parent = nodeA;
+		}	
+
+		// Otherwise, node A has no child
+		else { nodeA->lChild = nullptr; }
 
 		// Update the information
 		// of the modified nodes
 		nodeA->update();
 		nodeB->update();
 		nodeC->update();
-		nodeD->update();
-		nodeE->update();
 	}
 
 	// The root of the tree won't change
@@ -297,24 +291,31 @@ void BinaryTree<T>::pullRight(Node<T>* _head) {
 		// List of modified nodes
 		Node<T>
 			* nodeA{ _head },
-			* nodeB{ _head->parent },
-			* nodeC{ _head->lChild },
-			* nodeD{ _head->lChild->rChild };
+			* nodeB{ _head->lChild },
+			* nodeC{ _head->lChild->rChild },
+			* nodeD{ _head->parent };
 
-		// Change node B's right child to node C
-		// and adjust node C's parent
-		nodeB->rChild = nodeC;
-		nodeC->parent = nodeB;
+		// Adjust node D's relationship with node A,
+		// depending on which child node A is
+		if (nodeD->lChild == nodeA) { nodeD->lChild = nodeB; }
+		else { nodeD->rChild = nodeB; }
 		
-		// Change node C's right child to node A
-		// and adjust node A's parent to node C
-		nodeC->rChild = nodeA;
-		nodeA->parent = nodeC;
+		nodeB->parent = nodeD;
 
-		// Change node A's left child to node D
-		// and adjust node D's parent as long as it isn't empty
-		nodeA->lChild = nodeD;
-		if (nodeD != nullptr) { nodeD->parent = nodeA; }
+		// Adjust node A and B's relationship
+		nodeA->parent = nodeB;
+		nodeB->rChild = nodeA;
+
+		// If node C exists, adjust its
+		// relationship with node A
+		if (nodeC != nullptr) {
+
+			nodeA->lChild = nodeC;
+			nodeC->parent = nodeA;
+		}
+
+		// Otherwise, node A has no child
+		else { nodeA->lChild = nullptr; }
 
 		// Update the information
 		// of the modified nodes
@@ -330,45 +331,39 @@ void BinaryTree<T>::pullLeft(Node<T>* _head) {
 
 	// Check if we have to move the root
 	if (_head == root) {
-		
-		// Reassign the tree's root to it's right child
-		root = _head->rChild;
-
-		// The former root now has a parent
-		root->parent->parent = root;
-
-		// Adjust the former root's right child
-		root->parent->rChild = root->lChild;
-
-		// Make that child's parent the former root
-		// if it has a child
-		if (root->lChild != nullptr) {
-
-			root->lChild->parent = root->parent;
-		}
-
-		// Make the former root the left child
-		// of the new root
-		root->lChild = root->parent;
-
-		// Erase the new root's parent
-		root->parent = nullptr;
 
 		// List of modified nodes
 		Node<T>
 			* nodeA{ root },
-			* nodeB{ root->lChild },
-			* nodeC{ root->rChild },
-			* nodeD{ root->lChild->lChild },
-			* nodeE{ root->rChild->rChild };
+			* nodeB{ root->rChild },
+			* nodeC{ root->rChild->lChild };
+
+		// Reassign the tree's root to it's left child
+		// and get rid of its parent since it's the root
+		root = nodeB;
+		root->parent = nullptr;
+
+		// The new root now has a child
+		// and the former root now has a parent
+		nodeA->parent = nodeB;
+		nodeB->lChild = nodeA;
+
+		// If node C exists, adjust its
+		// relationship with node A
+		if (nodeC != nullptr) {
+
+			nodeA->rChild = nodeC;
+			nodeC->parent = nodeA;
+		}
+
+		// Otherwise, node A has no child
+		else { nodeA->rChild = nullptr; }
 
 		// Update the information
 		// of the modified nodes
 		nodeA->update();
 		nodeB->update();
 		nodeC->update();
-		nodeD->update();
-		nodeE->update();
 	}
 
 	// The root of the tree won't change
@@ -377,24 +372,31 @@ void BinaryTree<T>::pullLeft(Node<T>* _head) {
 		// List of modified nodes
 		Node<T>
 			* nodeA{ _head },
-			* nodeB{ _head->parent },
-			* nodeC{ _head->rChild },
-			* nodeD{ _head->rChild->lChild };
+			* nodeB{ _head->rChild },
+			* nodeC{ _head->rChild->lChild },
+			* nodeD{ _head->parent };
 
-		// Change node B's right child to node C
-		// and adjust node C's parent
-		nodeB->lChild = nodeC;
-		nodeC->parent = nodeB;
+		// Adjust node D's relationship with node A,
+		// depending on which child node A is
+		if (nodeD->rChild == nodeA) { nodeD->rChild = nodeB; }
+		else { nodeD->lChild = nodeB; }
 
-		// Change node C's right child to node A
-		// and adjust node A's parent to node C
-		nodeC->lChild = nodeA;
-		nodeA->parent = nodeC;
+		nodeB->parent = nodeD;
 
-		// Change node A's left child to node D
-		// and adjust node D's parent as long as it isn't empty
-		nodeA->rChild = nodeD;
-		if (nodeD != nullptr) { nodeD->parent = nodeA; }
+		// Adjust node A and B's relationship
+		nodeA->parent = nodeB;
+		nodeB->lChild = nodeA;
+
+		// If node C exists, adjust its
+		// relationship with node A
+		if (nodeC != nullptr) {
+
+			nodeA->rChild = nodeC;
+			nodeC->parent = nodeA;
+		}
+
+		// Otherwise, node A has no child
+		else { nodeA->rChild = nullptr; }
 
 		// Update the information
 		// of the modified nodes
@@ -457,7 +459,7 @@ void BinaryTree<T>::updateWeight(Node<T>* _node) {
 	while (_node->parent != nullptr) {
 
 		// Is the node the left child?
-		bool left{ _node == _node->parent->lChild }
+		bool left{ _node == _node->parent->lChild };
 
 		// Update the left weight of the parent
 		if (left) { _node->parent->lWeight = _node->mLength + 1; }
