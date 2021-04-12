@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <string>
 
 template <typename T>
 
@@ -18,8 +19,9 @@ public:
 		lWeight{ 0 },	// Left Weight
 		rWeight{ 0 };	// Right Weight
 
+
 /************************************************************************/
-/* 								DECLARATIONS	                        */
+/*								METHODS                                 */
 /************************************************************************/
 
 public:

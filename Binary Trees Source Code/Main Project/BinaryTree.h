@@ -25,6 +25,9 @@ private:
 		* root       { nullptr },
 		* unbalanced { nullptr },
 		* lastChecked{ nullptr };
+	
+public:
+
 	int
 		nodes { 0 },
 		length{ 0 };
@@ -36,8 +39,8 @@ private:
 
 public:
 
-	// Return the root as a constant
-	const Node<T> getRoot() const;
+	// Return a pointer to the root
+	Node<T>* getRoot() const;
 
 	// Does the tree contain a specific node?
 	bool contains(T);
@@ -93,7 +96,7 @@ public:
 /************************************************************************/
 
 template <typename T>
-const Node<T> BinaryTree<T>::getRoot() const { return *root; }
+Node<T>* BinaryTree<T>::getRoot() const { return root; }
 
 template <typename T>
 bool BinaryTree<T>::contains(T _data) {
@@ -127,30 +130,34 @@ bool BinaryTree<T>::contains(T _data) {
 template <typename T>
 void BinaryTree<T>::addNode(T _value) {
 
-	// Save it as root if there's none
-	if (root == nullptr) {
-		root = new Node<T>{ _value };
+	// Make sure that the tree doesn't contain the node already
+	if (!contains(_value)) {
+
+		// Save it as root if there's none
+		if (root == nullptr) {
+			root = new Node<T>{ _value };
+		}
+
+		// Save it as a child
+		else {
+
+			// Current Node
+			Node<T>* cNode{ lastChecked };
+
+			// Should the new node go to the left of the last checked one?
+			bool left{ _value < cNode->value };
+
+			// Save the new node to the correct side of the
+			// last checked one, with it as its parent
+			if (left) { cNode->lChild = new Node<T>{ _value, cNode }; }
+			else { cNode->rChild = new Node<T>{ _value, cNode }; }
+		}
+
+		// Reset the last checked node,
+		// and add one to the count of nodes
+		lastChecked = nullptr;
+		nodes++;
 	}
-
-	// Save it as a child
-	else {
-
-		// Current Node
-		Node<T>* cNode{ lastChecked };
-
-		// Should the new node go to the left of the last checked one?
-		bool left{ _value < cNode->value };
-
-		// Save the new node to the correct side of the
-		// last checked one, with it as its parent
-		if (left) { cNode->lChild = new Node<T>{ _value, cNode }; }
-		else { cNode->rChild = new Node<T>{ _value, cNode }; }
-	}
-
-	// Reset the last checked node,
-	// and add one to the count of nodes
-	lastChecked = nullptr;
-	nodes++;
 }
 
 template <typename T>
