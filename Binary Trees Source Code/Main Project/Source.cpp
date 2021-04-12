@@ -22,11 +22,9 @@ void print(sf::RenderWindow&, const BinaryTree<int>&);
 
 // Get the nodes from the tree and print them
 void getNodes(
-	sf::RenderWindow& _window, std::vector<int>, Node<int>*, int = 0
+	sf::RenderWindow& _window, std::vector<int>, Node<int>*, int, int = 0
 );
 
-// Count the number of apparitions of a number
-int countIf(std::vector<int>, int);
 
 /************************************************************************/
 /* 								DEFINITIONS		                        */
@@ -66,7 +64,7 @@ void print(sf::RenderWindow& _window, const BinaryTree<int>& _tree) {
 		Node<int>* cNode{ _tree.getRoot() };
 
 		// Print the nodes from the tree
-		getNodes(_window, nPerLevel, cNode);
+		getNodes(_window, nPerLevel, cNode, screenX >> 1);
 
 		_window.display();
 	}
@@ -74,7 +72,7 @@ void print(sf::RenderWindow& _window, const BinaryTree<int>& _tree) {
 
 void getNodes(
 	sf::RenderWindow& _window, std::vector<int> _nLvl,
-	Node<int>* _cNode, int _lvl
+	Node<int>* _cNode, int xPos, int _lvl
 ) {
 
 	// If the node's empty, return
@@ -89,25 +87,9 @@ void getNodes(
 
 	// Add that level to the list
 	_nLvl.push_back(cNode.level);
-	
-	// Get the current position of that node in the level
-	cNode.pos = countIf(_nLvl, cNode.level);
 
-	// Get the correct position of the node
-	int
-		xPos{ 1920 },
-		yPos{ 75 };
-
-	// Get the correct fraction for the level
-	for (int i{ 0 }; i < cNode.level ; i++) {
-		
-		xPos = xPos >> 1;
-	}
-
-	// Get the actual x position
-	xPos *= cNode.pos;
-
-	// Get the y position
+	// Get the correct y position of the node
+	int yPos = 75;
 	yPos *= cNode.level;
 
 	// Move the node to the correct position
@@ -116,23 +98,16 @@ void getNodes(
 	// Print the node
 	_window << cNode;
 
+	// Offset in the x axis for the children
+	int 
+		lOffset = xPos >> 1,
+		rOffset = xPos + lOffset;
+
 	// Get the left side
-	getNodes(_window, _nLvl, _cNode->lChild, cNode.level);
+	getNodes(_window, _nLvl, _cNode->lChild, lOffset, cNode.level);
 
 	// Get the right side
-	getNodes(_window, _nLvl, _cNode->rChild, cNode.level);
-}
-
-int countIf(std::vector<int> _arr, int _num) {
-	
-	int res{ 0 };
-
-	for (int i : _arr) {
-
-		if (i == _num) { res++; }		
-	}
-
-	return res;
+	getNodes(_window, _nLvl, _cNode->rChild, rOffset, cNode.level);
 }
 
 

@@ -11,8 +11,7 @@ public:
 	sf::Font		font;
 	sf::Text		number;
 	int
-		level{ 0 },	// Level of the node
-		pos  { 0 };	// Position in the level
+		level{ 0 };	// Level of the node
 
 
 /************************************************************************/
