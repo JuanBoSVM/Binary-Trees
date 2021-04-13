@@ -101,12 +101,15 @@ void getNodes(
 
 	// Offset in the x axis for the children
 	int 
-		offset,
+		offset{ 1920 },
 		lPos,
 		rPos;
 
 	// Calculate the offset based on the closest border
-	offset = std::min(1920 - xPos, xPos) >> 1;
+	for (int i{ 0 }; i < cNode.level + 1; i++) {
+		
+		offset = offset >> 1;
+	}	
 
 	lPos = xPos - offset;
 	rPos = xPos + offset;
@@ -162,13 +165,15 @@ int main() {
 		if (!tree) {
 			
 			// Print the before version
-			print(window, tree);
+			//print(window, tree);
 
 			// Rebalance the tree
 			tree.rebalance();
 		}
 		
 		//Print the result
-		print(window, tree);
+		//print(window, tree);
 	}
+
+	print(window, tree);
 }
