@@ -499,4 +499,7 @@ BinaryTree<T>::~BinaryTree() { delNodes(root); }
 /************************************************************************/
 
 template <typename T>
-BinaryTree<T>::operator bool() { return isBalanced(root); }
+BinaryTree<T>::operator bool() {
+	if (root == nullptr) { return true; }
+	else { return isBalanced(root); }
+}
