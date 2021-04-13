@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>			// Min
 #include <SFML/Graphics.hpp>
 
 #include "BinaryTree.h"
