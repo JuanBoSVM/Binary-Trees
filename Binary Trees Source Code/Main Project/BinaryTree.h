@@ -437,10 +437,18 @@ bool BinaryTree<T>::isBalanced(Node<T>* _node) {
 	}
 	
 	// If there are nodes to the left, check if they're balanced
-	if (_node->lChild != nullptr) { isBalanced(_node->lChild); }
+	if (_node->lChild != nullptr) { 
+		
+		// If the child isn't balanced, return false
+		if (!isBalanced(_node->lChild)) { return false; }
+	}
 
 	// If there are nodes to the right, check if they're balanced
-	if (_node->rChild != nullptr) { isBalanced(_node->rChild); }
+	if (_node->rChild != nullptr) {
+		
+		// If the child isn't balanced, return false
+		if (!isBalanced(_node->rChild)) { return false; }
+	}
 
 	// If the difference in weight is greater
 	// than 1, the tree's unbalanced

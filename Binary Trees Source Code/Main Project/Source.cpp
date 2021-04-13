@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>			// Min
 #include <SFML/Graphics.hpp>
 
 #include "BinaryTree.h"
@@ -100,14 +101,21 @@ void getNodes(
 
 	// Offset in the x axis for the children
 	int 
-		lOffset = xPos >> 1,
-		rOffset = xPos + lOffset;
+		offset,
+		lPos,
+		rPos;
+
+	// Calculate the offset based on the closest border
+	offset = std::min(1920 - xPos, xPos) >> 1;
+
+	lPos = xPos - offset;
+	rPos = xPos + offset;
 
 	// Get the left side
-	getNodes(_window, _nLvl, _cNode->lChild, lOffset, cNode.level);
+	getNodes(_window, _nLvl, _cNode->lChild, lPos, cNode.level);
 
 	// Get the right side
-	getNodes(_window, _nLvl, _cNode->rChild, rOffset, cNode.level);
+	getNodes(_window, _nLvl, _cNode->rChild, rPos, cNode.level );
 }
 
 
