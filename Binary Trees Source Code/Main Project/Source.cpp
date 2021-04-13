@@ -165,15 +165,13 @@ int main() {
 		if (!tree) {
 			
 			// Print the before version
-			//print(window, tree);
+			print(window, tree);
 
 			// Rebalance the tree
 			tree.rebalance();
 		}
 		
 		//Print the result
-		//print(window, tree);
+		print(window, tree);
 	}
-
-	print(window, tree);
 }
